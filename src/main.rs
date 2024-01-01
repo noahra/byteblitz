@@ -5,5 +5,5 @@ fn main() {
 
     let filename = &args[1];
 
-    println!("Reading contents of {}", filename);
+    println!("Reading the contents of {}", filename);
 }
