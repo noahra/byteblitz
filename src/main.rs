@@ -1,3 +1,9 @@
+use std::env;
+
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+
+    let filename = &args[1];
+
+    println!("Reading the contents of {}", filename);
 }
