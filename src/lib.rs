@@ -1,4 +1,5 @@
 use std::error::Error;
+use std::fmt::Display;
 use std::fs;
 
 pub struct Config {
@@ -20,27 +21,30 @@ impl Config {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read(config.file_path)?;
     let mut u32_numbers = Vec::new();
-
-    for i in (0..480).step_by(4) {
-        // Extract 4 bytes from contents.
+    for i in (0..1600).step_by(4) {
         let bytes = [
             contents[i],
             contents[i + 1],
             contents[i + 2],
             contents[i + 3],
         ];
-
-        // Convert the 4 bytes to a u32 and push it to the vector.
         if let Some(u32_integer) = convert_to_u32(bytes) {
             u32_numbers.push(u32_integer);
-            println!("{}", u32_integer); // Print each converted u32.
+
+            print_converted_elements_with_padding(&u32_numbers, u32_integer);
         } else {
-            // Handle conversion failure.
             return Err(From::from("Failed to convert bytes to u32."));
         }
     }
 
     Ok(())
+}
+
+fn print_converted_elements_with_padding<T: Display>(elements: &Vec<T>, element: T) {
+    print!("{:10} ", element);
+    if (elements.len() % 8) == 0 {
+        println!();
+    }
 }
 
 pub fn convert_to_u32(bytes: [u8; 4]) -> Option<u32> {
