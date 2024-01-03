@@ -20,13 +20,24 @@ impl Config {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read(config.file_path)?;
     let mut u32_numbers = Vec::new();
-    let bytes = [contents[0], contents[1], contents[2], contents[3]];
-    let u32_integer = convert_to_u32(bytes);
-    u32_numbers.push(u32_integer);
 
-    match u32_integer {
-        Some(n) => println!("{}", n),
-        None => return Err(From::from("Failed to convert bytes to u32.")),
+    for i in (0..480).step_by(4) {
+        // Extract 4 bytes from contents.
+        let bytes = [
+            contents[i],
+            contents[i + 1],
+            contents[i + 2],
+            contents[i + 3],
+        ];
+
+        // Convert the 4 bytes to a u32 and push it to the vector.
+        if let Some(u32_integer) = convert_to_u32(bytes) {
+            u32_numbers.push(u32_integer);
+            println!("{}", u32_integer); // Print each converted u32.
+        } else {
+            // Handle conversion failure.
+            return Err(From::from("Failed to convert bytes to u32."));
+        }
     }
 
     Ok(())
