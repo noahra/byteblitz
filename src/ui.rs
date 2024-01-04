@@ -1,3 +1,4 @@
+use crate::{config::Config, conversions::add_bytes_as_u32};
 use anyhow::Result;
 use crossterm::{
     event::{self, Event::Key, KeyCode::Char},
@@ -8,13 +9,11 @@ use ratatui::{
     layout::{Constraint, Layout},
     prelude::{CrosstermBackend, Frame, Terminal},
     style::{Color, Modifier, Style},
-    widgets::{Block, Borders, List, Paragraph}, text::Text,
+    text::Text,
+    widgets::{Block, Borders, List, Paragraph},
 };
 use std::error::Error;
 use std::fs;
-use crate::{conversions::add_bytes_as_u32, config::Config};
-
-
 
 pub fn startup() -> Result<()> {
     enable_raw_mode()?;
@@ -40,20 +39,20 @@ fn ui(app: &App, f: &mut Frame) {
         .constraints(constraints.as_ref())
         .split(f.size());
 
-        let max_index = app.start_of_window + app.end_of_window;
-        let max_index_width = max_index.to_string().len();
-    
-        let number_strings: Vec<String> = app
-            .converted_numbers
-            .iter()
-            .enumerate() // Get the index and value
-            .skip(app.start_of_window) // Skip to the starting window index.
-            .take(app.end_of_window - app.start_of_window) // Take the range from start to end of the window.
-            .map(|(index, n)| {
-                // Format with padded index number.
-                format!("{:width$}. {}", index + 1, n, width = max_index_width)
-            })
-            .collect();
+    let max_index = app.start_of_window + app.end_of_window;
+    let max_index_width = max_index.to_string().len();
+
+    let number_strings: Vec<String> = app
+        .converted_numbers
+        .iter()
+        .enumerate() // Get the index and value
+        .skip(app.start_of_window) // Skip to the starting window index.
+        .take(app.end_of_window - app.start_of_window) // Take the range from start to end of the window.
+        .map(|(index, n)| {
+            // Format with padded index number.
+            format!("{:width$}. {}", index + 1, n, width = max_index_width)
+        })
+        .collect();
 
     let list = List::new(number_strings)
         .block(
@@ -66,21 +65,15 @@ fn ui(app: &App, f: &mut Frame) {
         .highlight_symbol(">>")
         .repeat_highlight_symbol(true);
 
-
     f.render_widget(list, layout[0]);
 
-  
-    let instructions_paragraph = Paragraph::new(Text::raw("Use 'j' to move up, 'k' to move down in the list."))
-        .style(Style::default().fg(Color::Blue))
-        .block(
-            Block::default()
-                .title("Instructions")
-                .borders(Borders::ALL),
-        );
-
+    let instructions_paragraph = Paragraph::new(Text::raw(
+        "Use 'j' to move down, 'k' to move up in the list.",
+    ))
+    .style(Style::default().fg(Color::Blue))
+    .block(Block::default().title("Instructions").borders(Borders::ALL));
 
     f.render_widget(instructions_paragraph, layout[1]);
-
 }
 pub fn update(app: &mut App) -> Result<()> {
     if event::poll(std::time::Duration::from_millis(250))? {
@@ -88,11 +81,11 @@ pub fn update(app: &mut App) -> Result<()> {
             if key.kind == event::KeyEventKind::Press {
                 match key.code {
                     Char('q') => app.should_quit = true,
-                    Char('k') => {
+                    Char('j') => {
                         app.start_of_window += 1;
                         app.end_of_window += 1;
                     }
-                    Char('j') if app.start_of_window > 0 => {
+                    Char('k') if app.start_of_window > 0 => {
                         app.start_of_window -= 1;
                         app.end_of_window -= 1;
                     }
