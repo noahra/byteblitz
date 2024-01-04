@@ -106,11 +106,10 @@ fn ui(app: &App, f: &mut Frame) {
         .highlight_symbol(">>")
         .repeat_highlight_symbol(true);
 
-    // Render the table in the layout
+
     f.render_widget(list, layout[0]);
 
   
-    // Create a paragraph for the instructions
     let instructions_paragraph = Paragraph::new(Text::raw("Use 'j' to move up, 'k' to move down in the list."))
         .style(Style::default().fg(Color::Blue))
         .block(
@@ -119,8 +118,7 @@ fn ui(app: &App, f: &mut Frame) {
                 .borders(Borders::ALL),
         );
 
-    // Render the instructions paragraph
-    // Assuming it should be in the second part of the layout
+
     f.render_widget(instructions_paragraph, layout[1]);
 
 }
@@ -189,10 +187,8 @@ fn add_bytes_as_u32(
     bytes: &[u8],
     u32_numbers: &mut Vec<u32>,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    // Calculate the maximum index that is a multiple of 4 and within the byte array's bounds
     let max_index = bytes.len() - (bytes.len() % 4);
 
-    // Iterate over the bytes in steps of 4 up to the max_index
     for i in (0..max_index).step_by(4) {
         let chunk = [bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]];
         if let Some(u32_integer) = convert_to_u32(chunk) {
