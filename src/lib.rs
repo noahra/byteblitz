@@ -7,7 +7,8 @@ use crossterm::{
 use ratatui::{
     layout::{Constraint, Layout},
     prelude::{CrosstermBackend, Frame, Terminal},
-    widgets::{Block, Borders,List}, style::{Style, Modifier, Color},
+    style::{Color, Modifier, Style},
+    widgets::{Block, Borders, List, Paragraph}, text::Text,
 };
 use std::convert::From;
 use std::error::Error;
@@ -68,7 +69,7 @@ fn shutdown() -> Result<()> {
 fn ui(app: &App, f: &mut Frame) {
     let constraints = [
         Constraint::Percentage(25),
-        Constraint::Percentage(25),
+        Constraint::Percentage(5),
         Constraint::Percentage(25),
         Constraint::Percentage(25),
     ];
@@ -78,18 +79,28 @@ fn ui(app: &App, f: &mut Frame) {
         .constraints(constraints.as_ref())
         .split(f.size());
 
-    // Convert the u32 numbers to strings and collect them into a Vec
-    let number_strings: Vec<String> = app
-        .converted_numbers
-        .iter()     
-        .skip(app.start_of_window)           // Skip the first 5 elements.
-        .take(app.end_of_window)  // Create an iterator over the items.ake the first 31 elements (from 0 to 30).
-        .map(|n| n.to_string())  // Convert each element to a String.
-        .collect(); 
+        let max_index = app.start_of_window + app.end_of_window;
+        let max_index_width = max_index.to_string().len();
+    
+        // Convert the u32 numbers to numbered strings and collect them into a Vec
+        let number_strings: Vec<String> = app
+            .converted_numbers
+            .iter()
+            .enumerate() // Get the index and value
+            .skip(app.start_of_window) // Skip to the starting window index.
+            .take(app.end_of_window - app.start_of_window) // Take the range from start to end of the window.
+            .map(|(index, n)| {
+                // Format with padded index number.
+                format!("{:width$}. {}", index + 1, n, width = max_index_width)
+            })
+            .collect();
 
-
-        let list = List::new(number_strings)
-        .block(Block::default().title("List").borders(Borders::ALL))
+    let list = List::new(number_strings)
+        .block(
+            Block::default()
+                .title("Converted binary values")
+                .borders(Borders::ALL),
+        )
         .style(Style::default().fg(Color::Green))
         .highlight_style(Style::default().add_modifier(Modifier::ITALIC))
         .highlight_symbol(">>")
@@ -97,6 +108,21 @@ fn ui(app: &App, f: &mut Frame) {
 
     // Render the table in the layout
     f.render_widget(list, layout[0]);
+
+  
+    // Create a paragraph for the instructions
+    let instructions_paragraph = Paragraph::new(Text::raw("Use 'j' to move up, 'k' to move down in the list."))
+        .style(Style::default().fg(Color::Blue))
+        .block(
+            Block::default()
+                .title("Instructions")
+                .borders(Borders::ALL),
+        );
+
+    // Render the instructions paragraph
+    // Assuming it should be in the second part of the layout
+    f.render_widget(instructions_paragraph, layout[1]);
+
 }
 
 fn update(app: &mut App) -> Result<()> {
@@ -105,14 +131,14 @@ fn update(app: &mut App) -> Result<()> {
             if key.kind == event::KeyEventKind::Press {
                 match key.code {
                     Char('q') => app.should_quit = true,
-                    Char('j') => {
+                    Char('k') => {
                         app.start_of_window += 1;
                         app.end_of_window += 1;
-                    },
-                    Char('i') if app.start_of_window > 0 => {
+                    }
+                    Char('j') if app.start_of_window > 0 => {
                         app.start_of_window -= 1;
                         app.end_of_window -= 1;
-                    },
+                    }
                     _ => {}
                 }
             }
@@ -127,7 +153,6 @@ struct App {
     end_of_window: usize,
 }
 
-
 fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     // ratatui terminal
     let mut t = Terminal::new(CrosstermBackend::new(std::io::stderr()))?;
@@ -135,7 +160,7 @@ fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     let bytes_read = fs::read(config.file_path)?;
     let mut u32_numbers = Vec::new();
 
-    add_bytes_as_u32(&bytes_read, 0, 1600, &mut u32_numbers)?;
+    add_bytes_as_u32(&bytes_read, &mut u32_numbers)?;
     let mut app = App {
         should_quit: false,
         converted_numbers: u32_numbers,
@@ -162,19 +187,13 @@ fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
 
 fn add_bytes_as_u32(
     bytes: &[u8],
-    start: usize,
-    num_bytes: usize,
     u32_numbers: &mut Vec<u32>,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    // Check if the range is within the byte array's bounds and is a multiple of 4
-    if start + num_bytes > bytes.len() || num_bytes % 4 != 0 {
-        return Err(From::from(
-            "Range is out of bounds or not aligned to 4 bytes.",
-        ));
-    }
+    // Calculate the maximum index that is a multiple of 4 and within the byte array's bounds
+    let max_index = bytes.len() - (bytes.len() % 4);
 
-    // Iterate over the bytes in steps of 4
-    for i in (start..start + num_bytes).step_by(4) {
+    // Iterate over the bytes in steps of 4 up to the max_index
+    for i in (0..max_index).step_by(4) {
         let chunk = [bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]];
         if let Some(u32_integer) = convert_to_u32(chunk) {
             u32_numbers.push(u32_integer);
@@ -185,6 +204,7 @@ fn add_bytes_as_u32(
 
     Ok(())
 }
+
 
 #[cfg(test)]
 mod tests {
