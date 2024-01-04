@@ -14,8 +14,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let status = generate_ui(config);
     shutdown()?;
     status?;
-
-    // shutdown down: reset terminal back to original state
+    
     crossterm::execute!(std::io::stderr(), crossterm::terminal::LeaveAlternateScreen)?;
     crossterm::terminal::disable_raw_mode()?;
 

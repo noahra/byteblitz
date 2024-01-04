@@ -10,7 +10,6 @@ pub fn convert_to_u32(bytes: [u8; 4]) -> Option<u32> {
     }
 }
 
-
 pub fn add_bytes_as_u32(
     bytes: &[u8],
     u32_numbers: &mut Vec<u32>,
@@ -28,7 +27,6 @@ pub fn add_bytes_as_u32(
 
     Ok(())
 }
-
 
 #[cfg(test)]
 mod tests {

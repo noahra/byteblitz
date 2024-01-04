@@ -36,7 +36,6 @@ fn ui(app: &App, f: &mut Frame) {
         Constraint::Percentage(25),
     ];
 
-    // Create a layout
     let layout = Layout::default()
         .constraints(constraints.as_ref())
         .split(f.size());
@@ -44,7 +43,6 @@ fn ui(app: &App, f: &mut Frame) {
         let max_index = app.start_of_window + app.end_of_window;
         let max_index_width = max_index.to_string().len();
     
-        // Convert the u32 numbers to numbered strings and collect them into a Vec
         let number_strings: Vec<String> = app
             .converted_numbers
             .iter()
