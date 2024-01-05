@@ -29,7 +29,7 @@ pub fn shutdown() -> Result<()> {
 
 fn ui(app: &App, f: &mut Frame) {
     let constraints = [
-        Constraint::Percentage(25),
+        Constraint::Percentage(60),
         Constraint::Percentage(5),
         Constraint::Percentage(25),
         Constraint::Percentage(25),
@@ -114,7 +114,7 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
         should_quit: false,
         converted_numbers: u32_numbers,
         start_of_window: 0,
-        end_of_window: 14,
+        end_of_window: 36,
     };
 
     loop {
