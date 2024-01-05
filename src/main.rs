@@ -1,8 +1,9 @@
+pub mod enums;
+
 use std::env;
 use std::process;
 
 use binscope::config::Config;
-
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
@@ -16,5 +17,3 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     Ok(())
 }
-
-
