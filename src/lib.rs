@@ -1,10 +1,11 @@
 use anyhow::Result;
 use config::Config;
-use ui::{startup, shutdown, generate_ui};
 use std::error::Error;
-mod ui;
-mod conversions;
+use ui::{generate_ui, shutdown, startup};
 pub mod config;
+mod conversions;
+mod format;
+mod ui;
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     crossterm::terminal::enable_raw_mode()?;
@@ -14,10 +15,9 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let status = generate_ui(config);
     shutdown()?;
     status?;
-    
+
     crossterm::execute!(std::io::stderr(), crossterm::terminal::LeaveAlternateScreen)?;
     crossterm::terminal::disable_raw_mode()?;
 
     Ok(())
 }
-
