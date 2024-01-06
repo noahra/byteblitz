@@ -33,20 +33,19 @@ pub fn shutdown() -> Result<()> {
 }
 
 pub fn create_display_list<T: std::fmt::Display>(
-    vector_to_be_converted: &Vec<T>,
+    vector_to_be_converted: &[T],
     app: &App,
 ) -> Vec<String> {
     let max_index = app.start_of_window + app.end_of_window;
     let max_index_width = max_index.to_string().len();
-    let converted_list_values: Vec<String> = vector_to_be_converted
+
+    vector_to_be_converted
         .iter()
         .enumerate() // Get the index and value
         .skip(app.start_of_window) // Skip to the starting window index.
         .take(app.end_of_window - app.start_of_window) // Take the range from start to end of the window.
         .map(|(index, n)| format!("{:width$}. {}", index + 1, n, width = max_index_width))
-        .collect();
-
-    converted_list_values
+        .collect()
 }
 fn ui(app: &App, f: &mut Frame) {
     let constraints = [
@@ -91,6 +90,8 @@ fn ui(app: &App, f: &mut Frame) {
     .block(Block::default().title("Instructions").borders(Borders::ALL));
 
     f.render_widget(instructions_paragraph, layout[1]);
+
+    
 }
 pub fn update(app: &mut App) -> Result<()> {
     if event::poll(std::time::Duration::from_millis(250))? {
