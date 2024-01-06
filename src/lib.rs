@@ -7,6 +7,7 @@ mod conversions;
 mod format;
 mod ui;
 mod inputmodes;
+mod ui_helpers;
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     crossterm::terminal::enable_raw_mode()?;
