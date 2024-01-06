@@ -49,9 +49,9 @@ pub fn create_display_list<T: std::fmt::Display>(
 }
 fn ui(app: &App, f: &mut Frame) {
     let constraints = [
-        Constraint::Percentage(60),
         Constraint::Percentage(5),
-        Constraint::Percentage(25),
+        Constraint::Percentage(50),
+        Constraint::Percentage(5),
         Constraint::Percentage(25),
     ];
 
@@ -62,7 +62,7 @@ fn ui(app: &App, f: &mut Frame) {
     let converted_values;
 
     match app.current_format {
-        Format::UtfEight => {
+        Format::Utf8 => {
             converted_values = create_display_list(&app.converted_binary_to_utf8, app);
         }
         Format::Uint32 => {
@@ -81,7 +81,17 @@ fn ui(app: &App, f: &mut Frame) {
         .highlight_symbol(">>")
         .repeat_highlight_symbol(true);
 
-    f.render_widget(list, layout[0]);
+
+        let current_format_paragraph = Paragraph::new(Text::raw(
+            format!("Current Format: {:?}", app.current_format),
+        ))
+        .style(Style::default().fg(Color::Yellow))
+        .block(Block::default().title("Current Format").borders(Borders::ALL));
+    
+        // Render the current format widget
+        f.render_widget(current_format_paragraph, layout[0]);
+    
+    f.render_widget(list, layout[1]);
 
     let instructions_paragraph = Paragraph::new(Text::raw(
         "Use 'j' to move down, 'k' to move up in the list. Use 'h' and 'l' to switch between formats",
@@ -89,7 +99,7 @@ fn ui(app: &App, f: &mut Frame) {
     .style(Style::default().fg(Color::Blue))
     .block(Block::default().title("Instructions").borders(Borders::ALL));
 
-    f.render_widget(instructions_paragraph, layout[1]);
+    f.render_widget(instructions_paragraph, layout[2]);
 
     
 }
