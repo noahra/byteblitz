@@ -2,10 +2,14 @@ use crate::{
     config::Config,
     conversions::{add_bytes_as_u32, convert_bytes_to_utf8},
     format::Format,
+    inputmodes::InputMode,
 };
 use anyhow::Result;
 use crossterm::{
-    event::{self, Event::Key, KeyCode::{Char, self}, KeyEventKind},
+    event::{
+        self,
+        KeyCode::{self},
+    },
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
@@ -13,18 +17,13 @@ use ratatui::{
     layout::{Constraint, Layout},
     prelude::{CrosstermBackend, Frame, Terminal},
     style::{Color, Modifier, Style, Stylize as _},
-    text::{Text, Line},
+    text::{Line, Text},
     widgets::{Block, Borders, List, Paragraph},
 };
 use std::error::Error;
 use std::fs;
 use strum::IntoEnumIterator;
 
-
-enum InputMode {
-    Normal,
-    Editing,
-}
 
 pub fn startup() -> Result<()> {
     enable_raw_mode()?;
@@ -74,8 +73,6 @@ fn ui(app: &mut App, f: &mut Frame) {
     match app.current_format {
         Format::Utf8 => {
             converted_values = create_display_list(&app.converted_binary_to_utf8.clone(), app);
-            
-
         }
         Format::Uint32 => {
             converted_values = create_display_list(&app.converted_numbers.clone(), app);
@@ -116,8 +113,6 @@ fn ui(app: &mut App, f: &mut Frame) {
     .block(Block::default().title("Instructions").borders(Borders::ALL));
 
     f.render_widget(instructions_paragraph, layout[2]);
-
-
 
     let (msg, style) = match app.input_mode {
         InputMode::Normal => (
@@ -170,90 +165,84 @@ fn ui(app: &mut App, f: &mut Frame) {
             )
         }
     }
-
-
-
-
 }
 
 pub fn update(app: &mut App) -> Result<()> {
     if event::poll(std::time::Duration::from_millis(250))? {
-        if let Key(key) = event::read()? {
-            match key.kind {
-                event::KeyEventKind::Press => {
-                    match key.code {
-                        Char('q') => app.should_quit = true,
-                        Char('j') => {
-                            app.start_of_window += 1;
-                            app.end_of_window += 1;
-                        }
-                        Char('k') if app.start_of_window > 0 => {
-                            app.start_of_window -= 1;
-                            app.end_of_window -= 1;
-                        }
-                        Char('h') if app.format_list_index > 0 => {
-                            app.format_list_index -= 1;
-                            app.current_format = app.format_list[app.format_list_index];
-                            app.start_of_window = 0;
-                            app.end_of_window = 30;
-                        }
-                        Char('l') if app.format_list_index < app.format_list.len() - 1 => {
-                            app.format_list_index += 1;
-                            app.current_format = app.format_list[app.format_list_index];
-                            app.start_of_window = 0;
-                            app.end_of_window = 30;
-                        }
-                        // Add additional cases here if necessary
-                        _ => {}
-                    }
+        if let event::Event::Key(key) = event::read()? {
+            if key.kind == event::KeyEventKind::Press {
+                match app.input_mode {
+                    InputMode::Normal => handle_normal_mode_keys(app, key.code)?,
+                    InputMode::Editing => handle_editing_mode_keys(app, key.code)?,
                 }
-                _ => {}
-            }
-
-            // Handling InputMode within the same block
-            match app.input_mode {
-                InputMode::Normal => match key.code {
-                    KeyCode::Char('e') => {
-                        app.input_mode = InputMode::Editing;
-                    }
-                    KeyCode::Char('n') => {
-                        return Ok(());
-                    }
-                    _ => {}
-                },
-                InputMode::Editing if key.kind == KeyEventKind::Press => match key.code {
-                    KeyCode::Enter => {
-                        // Check if input is not empty before submitting the message
-                        if !app.input.trim().is_empty() {
-                            app.submit_message();
-                        }
-                        // If input is empty, do nothing or handle as needed
-                    }
-                    KeyCode::Char(to_insert) => {
-                        app.enter_char(to_insert);
-                    }
-                    KeyCode::Backspace => {
-                        app.delete_char();
-                    }
-                    KeyCode::Left => {
-                        app.move_cursor_left();
-                    }
-                    KeyCode::Right => {
-                        app.move_cursor_right();
-                    }
-                    KeyCode::Esc => {
-                        app.input_mode = InputMode::Normal;
-                    }
-                    _ => {}
-                },
-                _ => {}
             }
         }
     }
-
+    Ok(())
+}
+fn handle_normal_mode_keys(app: &mut App, key: KeyCode) -> Result<()> {
+    match key {
+        KeyCode::Char('q') => {
+            app.should_quit = true;
+        }
+        KeyCode::Char('j') => {
+            app.start_of_window += 1;
+            app.end_of_window += 1;
+        }
+        KeyCode::Char('k') if app.start_of_window > 0 => {
+            app.start_of_window -= 1;
+            app.end_of_window -= 1;
+        }
+        KeyCode::Char('h') if app.format_list_index > 0 => {
+            app.format_list_index -= 1;
+            app.current_format = app.format_list[app.format_list_index];
+            app.start_of_window = 0;
+            app.end_of_window = 30;
+        }
+        KeyCode::Char('l') if app.format_list_index < app.format_list.len() - 1 => {
+            app.format_list_index += 1;
+            app.current_format = app.format_list[app.format_list_index];
+            app.start_of_window = 0;
+            app.end_of_window = 30;
+        }
+        KeyCode::Char('e') => {
+            app.input_mode = InputMode::Editing;
+        }
+        KeyCode::Char('n') => {
+            return Ok(());
+        }
+        _ => {}
+    }
     Ok(())
 }
 
+// Function to handle key presses in editing mode
+fn handle_editing_mode_keys(app: &mut App, key: KeyCode) -> Result<()> {
+    match key {
+        KeyCode::Enter => {
+            if !app.input.trim().is_empty() {
+                app.submit_message();
+            }
+        }
+        KeyCode::Char(to_insert) => {
+            app.enter_char(to_insert);
+        }
+        KeyCode::Backspace => {
+            app.delete_char();
+        }
+        KeyCode::Left => {
+            app.move_cursor_left();
+        }
+        KeyCode::Right => {
+            app.move_cursor_right();
+        }
+        KeyCode::Esc => {
+            app.input_mode = InputMode::Normal;
+        }
+        _ => {}
+    }
+    Ok(())
+}
 pub struct App {
     pub bytes_read: Vec<u8>,
     pub should_quit: bool,
@@ -321,8 +310,10 @@ impl App {
 
     fn submit_message(&mut self) {
         // TODO - proper error handling
-        if self.input.parse::<usize>().unwrap() > 0 && self.input.parse::<usize>().unwrap() < self.max_length - 40 {
-            self.start_of_window = self.input.parse::<usize>().unwrap()-1;
+        if self.input.parse::<usize>().unwrap() > 0
+            && self.input.parse::<usize>().unwrap() < self.max_length - 40
+        {
+            self.start_of_window = self.input.parse::<usize>().unwrap() - 1;
             self.end_of_window = self.input.parse::<usize>().unwrap() + 36;
         }
         self.input.clear();
