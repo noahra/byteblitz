@@ -14,7 +14,7 @@ use ratatui::{
     prelude::{CrosstermBackend, Frame, Terminal},
     style::{Color, Modifier, Style, Stylize as _},
     text::{Line, Text},
-    widgets::{Block, Borders, List, Paragraph},
+    widgets::{Block, Borders, List, Paragraph, ListDirection, ListItem},
 };
 use std::error::Error;
 use std::fs;
@@ -97,14 +97,6 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-
-
-
-
-
-
-
-// Function to create the list of converted values
 fn create_converted_values_list(app: &mut App) -> List<'static> {
     let converted_values = match app.current_format {
         Format::Utf8 => create_display_list(&app.converted_binary_to_utf8.clone(), app),
@@ -123,21 +115,43 @@ fn create_converted_values_list(app: &mut App) -> List<'static> {
         .repeat_highlight_symbol(true)
 }
 
-// Function to create the current format paragraph
-fn create_current_format_paragraph(app: &App) -> Paragraph<'static> {
-    Paragraph::new(Text::raw(format!(
-        "Current Format: {:?}",
-        app.current_format
-    )))
-    .style(Style::default().fg(Color::Yellow))
-    .block(
-        Block::default()
-            .title("Current Format")
-            .borders(Borders::ALL),
-    )
-}
+fn create_current_format_paragraph(app: & App) -> List<'static> {
+    let mut vector_of_formats: Vec<ListItem> = Vec::new();
 
-// Function to create the instructions paragraph
+    for (index, element) in app.format_list.iter().enumerate() {
+
+        if index == app.format_list_index {
+            let format_paragraph = ListItem::new(Text::raw(format!(
+                "{:?}",
+                element
+            )))
+            .style(Style::default().fg(Color::White));
+    
+            vector_of_formats.push(format_paragraph);  
+        }
+        else {
+    
+        let format_paragraph = ListItem::new(Text::raw(format!(
+            "{:?}",
+            element
+        )))
+        .style(Style::default().fg(Color::Yellow));
+
+        vector_of_formats.push(format_paragraph);    
+    }
+
+    }
+        let list = List::new(vector_of_formats)
+        .block(Block::default().title("List").borders(Borders::ALL))
+        .style(Style::default().fg(Color::White))
+        .highlight_style(Style::default().add_modifier(Modifier::ITALIC))
+        .highlight_symbol(">>")
+        .repeat_highlight_symbol(true)
+        .direction(ListDirection::TopToBottom);
+
+    list
+    
+}
 fn create_instructions_paragraph() -> Paragraph<'static> {
     Paragraph::new(Text::raw(
         "Use 'j' to move down, 'k' to move up in the list. Use 'h' and 'l' to switch between formats",
@@ -145,8 +159,6 @@ fn create_instructions_paragraph() -> Paragraph<'static> {
     .style(Style::default().fg(Color::Blue))
     .block(Block::default().title("Instructions").borders(Borders::ALL))
 }
-
-// Function to create the help message
 fn create_help_message(app: &App) -> Paragraph<'static> {
     let (msg, style) = match app.input_mode {
         InputMode::Normal => (
@@ -189,7 +201,7 @@ fn create_input_paragraph(app: &mut App) -> Paragraph<> {
 fn ui(app: &mut App, f: &mut Frame) {
     // Define constraints and layout
     let constraints = [
-        Constraint::Percentage(5),
+        Constraint::Percentage(15),
         Constraint::Percentage(50),
         Constraint::Percentage(5),
         Constraint::Percentage(5),
