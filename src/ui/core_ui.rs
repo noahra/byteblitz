@@ -41,6 +41,7 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     let mut i24_numbers = Vec::new();
     let mut u64_numbers = Vec::new();
     let mut i64_numbers = Vec::new();
+    let mut f32_numbers = Vec::new();
     let mut converted_binary_to_ascii = Vec::new();
     let format_list: Vec<Format> = Format::iter().collect();
 
@@ -52,6 +53,7 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     add_three_bytes_as_number(&bytes_read, &mut i24_numbers, Endian::Big)?;
     add_eight_bytes_as_number(&bytes_read, &mut u64_numbers, Endian::Big)?;
     add_eight_bytes_as_number(&bytes_read, &mut i64_numbers, Endian::Big)?;
+    add_bytes_as_number(&bytes_read,&mut f32_numbers, Endian::Big)?;
 
     add_byte_as_i8(&bytes_read, &mut i8_numbers)?;
     convert_bytes_to_ascii(&bytes_read, &mut converted_binary_to_ascii)?;
@@ -68,6 +70,7 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
         converted_binary_to_i24: i24_numbers,
         converted_binary_to_u64: u64_numbers,
         converted_binary_to_i64: i64_numbers,
+        converted_binary_to_f32: f32_numbers,
         converted_binary_to_ascii,
         start_of_window: 0,
         end_of_window: 30,

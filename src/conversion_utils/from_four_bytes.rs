@@ -24,6 +24,17 @@ impl From4Bytes for i32 {
         i32::from_le_bytes(bytes)
     }
 }
+impl From4Bytes for f32 {
+    fn from_be_bytes(bytes: [u8; 4]) -> Self {
+        f32::from_be_bytes(bytes)
+    }
+
+    fn from_le_bytes(bytes: [u8; 4]) -> Self {
+        f32::from_le_bytes(bytes)
+    }
+}
+
+
 
 pub fn add_bytes_as_number<T: From4Bytes>(
     bytes: &[u8],
