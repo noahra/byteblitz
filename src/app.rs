@@ -6,6 +6,8 @@ pub struct App {
     pub converted_binary_to_u32: Vec<u32>,
     pub converted_binary_to_i32: Vec<i32>,
     pub converted_binary_to_i8: Vec<i8>,
+    pub converted_binary_to_u16: Vec<u16>,
+    pub converted_binary_to_i16: Vec<i16>,
     pub converted_binary_to_ascii: Vec<char>,
     pub start_of_window: usize,
     pub end_of_window: usize,

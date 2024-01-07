@@ -6,5 +6,7 @@ pub enum Format {
     Int32,
     Int8,
     Uint8,
+    Int16,
+    Uint16,
     Ascii,
 }

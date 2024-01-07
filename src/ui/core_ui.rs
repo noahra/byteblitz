@@ -1,6 +1,6 @@
 use crate::{
     config::Config,
-    app::App, enums::{format::Format, inputmodes::InputMode, endian::Endian}, conversion_utils::{ascii::convert_bytes_to_ascii, from_four_bytes::add_bytes_as_number, from_one_byte_to_i8::add_byte_as_i8},
+    app::App, enums::{format::Format, inputmodes::InputMode, endian::Endian}, conversion_utils::{ascii::convert_bytes_to_ascii, from_four_bytes::add_bytes_as_number, from_one_byte_to_i8::add_byte_as_i8, from_two_bytes::add_two_bytes_as_number},
 };
 use anyhow::Result;
 use crossterm::{
@@ -35,11 +35,15 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     let mut u32_numbers = Vec::new();
     let mut i32_numbers = Vec::new();
     let mut i8_numbers = Vec::new();
+    let mut u16_numbers = Vec::new();
+    let mut i16_numbers = Vec::new();
     let mut converted_binary_to_ascii = Vec::new();
     let format_list: Vec<Format> = Format::iter().collect();
 
     add_bytes_as_number(&bytes_read, &mut u32_numbers, Endian::Big)?;
     add_bytes_as_number(&bytes_read, &mut i32_numbers, Endian::Big)?;
+    add_two_bytes_as_number(&bytes_read, &mut u16_numbers, Endian::Big)?;
+    add_two_bytes_as_number(&bytes_read, &mut i16_numbers, Endian::Big)?;
     add_byte_as_i8(&bytes_read, &mut i8_numbers)?;
     convert_bytes_to_ascii(&bytes_read, &mut converted_binary_to_ascii)?;
     let vec = &u32_numbers.clone();
@@ -49,6 +53,8 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
         converted_binary_to_u32: u32_numbers,
         converted_binary_to_i32: i32_numbers,
         converted_binary_to_i8: i8_numbers,
+        converted_binary_to_u16: u16_numbers,
+        converted_binary_to_i16: i16_numbers,
         converted_binary_to_ascii,
         start_of_window: 0,
         end_of_window: 30,
