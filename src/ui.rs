@@ -2,7 +2,8 @@ use crate::{
     config::Config,
     conversions::{add_bytes_as_u32, convert_bytes_to_utf8},
     format::Format,
-    inputmodes::InputMode, ui_helpers::{update, App},
+    inputmodes::InputMode,
+    ui_helpers::{update, App},
 };
 use anyhow::Result;
 use crossterm::{
@@ -14,12 +15,11 @@ use ratatui::{
     prelude::{CrosstermBackend, Frame, Terminal},
     style::{Color, Modifier, Style, Stylize as _},
     text::{Line, Text},
-    widgets::{Block, Borders, List, Paragraph, ListDirection, ListItem},
+    widgets::{Block, Borders, List, ListDirection, ListItem, Paragraph},
 };
 use std::error::Error;
 use std::fs;
 use strum::IntoEnumIterator;
-
 
 pub fn startup() -> Result<()> {
     enable_raw_mode()?;
@@ -49,9 +49,6 @@ pub fn create_display_list<T: std::fmt::Display>(
         .map(|(index, n)| format!("{:width$}. {}", index + 1, n, width = max_index_width))
         .collect()
 }
-
-
-
 
 pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     let mut t = Terminal::new(CrosstermBackend::new(std::io::stderr()))?;
@@ -106,7 +103,10 @@ fn create_converted_values_list(app: &mut App) -> List<'static> {
     List::new(converted_values)
         .block(
             Block::default()
-                .title("Converted binary values")
+                .title(format!(
+                    "Converted binary values - Total: {}",
+                    app.max_length
+                ))
                 .borders(Borders::ALL),
         )
         .style(Style::default().fg(Color::Green))
@@ -115,33 +115,23 @@ fn create_converted_values_list(app: &mut App) -> List<'static> {
         .repeat_highlight_symbol(true)
 }
 
-fn create_current_format_paragraph(app: & App) -> List<'static> {
+fn create_current_format_paragraph(app: &App) -> List<'static> {
     let mut vector_of_formats: Vec<ListItem> = Vec::new();
 
     for (index, element) in app.format_list.iter().enumerate() {
-
         if index == app.format_list_index {
-            let format_paragraph = ListItem::new(Text::raw(format!(
-                "{:?}",
-                element
-            )))
-            .style(Style::default().fg(Color::White));
-    
-            vector_of_formats.push(format_paragraph);  
+            let format_paragraph = ListItem::new(Text::raw(format!("{:?}", element)))
+                .style(Style::default().fg(Color::White));
+
+            vector_of_formats.push(format_paragraph);
+        } else {
+            let format_paragraph = ListItem::new(Text::raw(format!("{:?}", element)))
+                .style(Style::default().fg(Color::Yellow));
+
+            vector_of_formats.push(format_paragraph);
         }
-        else {
-    
-        let format_paragraph = ListItem::new(Text::raw(format!(
-            "{:?}",
-            element
-        )))
-        .style(Style::default().fg(Color::Yellow));
-
-        vector_of_formats.push(format_paragraph);    
     }
-
-    }
-        let list = List::new(vector_of_formats)
+    let list = List::new(vector_of_formats)
         .block(Block::default().title("List").borders(Borders::ALL))
         .style(Style::default().fg(Color::White))
         .highlight_style(Style::default().add_modifier(Modifier::ITALIC))
@@ -150,7 +140,6 @@ fn create_current_format_paragraph(app: & App) -> List<'static> {
         .direction(ListDirection::TopToBottom);
 
     list
-    
 }
 fn create_instructions_paragraph() -> Paragraph<'static> {
     Paragraph::new(Text::raw(
@@ -188,7 +177,7 @@ fn create_help_message(app: &App) -> Paragraph<'static> {
 }
 
 // Function to create the input paragraph
-fn create_input_paragraph(app: &mut App) -> Paragraph<> {
+fn create_input_paragraph(app: &mut App) -> Paragraph {
     Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
             InputMode::Normal => Style::default(),
@@ -197,9 +186,7 @@ fn create_input_paragraph(app: &mut App) -> Paragraph<> {
         .block(Block::default().borders(Borders::ALL).title("Line number"))
 }
 
-// Refactored ui function
 fn ui(app: &mut App, f: &mut Frame) {
-    // Define constraints and layout
     let constraints = [
         Constraint::Percentage(15),
         Constraint::Percentage(50),
@@ -213,22 +200,22 @@ fn ui(app: &mut App, f: &mut Frame) {
         .constraints(constraints.as_ref())
         .split(f.size());
 
-    // Create widgets
     let list = create_converted_values_list(app);
     let current_format_paragraph = create_current_format_paragraph(app);
     let instructions_paragraph = create_instructions_paragraph();
     let help_message = create_help_message(app);
     let input = create_input_paragraph(app);
 
-    // Render widgets
     f.render_widget(current_format_paragraph, layout[0]);
     f.render_widget(list, layout[1]);
     f.render_widget(instructions_paragraph, layout[2]);
     f.render_widget(help_message, layout[4]);
     f.render_widget(input, layout[3]);
 
-    // Handle cursor for input mode
     if let InputMode::Editing = app.input_mode {
-        f.set_cursor(layout[3].x + app.cursor_position as u16 + 1, layout[3].y + 1)
+        f.set_cursor(
+            layout[3].x + app.cursor_position as u16 + 1,
+            layout[3].y + 1,
+        )
     }
 }
