@@ -1,6 +1,6 @@
 use crate::{
     config::Config,
-    conversions::{add_bytes_as_u32, convert_bytes_to_ascii},
+    conversions::{ convert_bytes_to_ascii, add_bytes_as_number, Endian},
     app::App, enums::{format::Format, inputmodes::InputMode},
 };
 use anyhow::Result;
@@ -34,19 +34,22 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
 
     let bytes_read = fs::read(config.file_path)?;
     let mut u32_numbers = Vec::new();
+    let mut i32_numbers = Vec::new();
     let mut converted_binary_to_ascii = Vec::new();
     let format_list: Vec<Format> = Format::iter().collect();
 
-    add_bytes_as_u32(&bytes_read, &mut u32_numbers)?;
+    add_bytes_as_number(&bytes_read, &mut u32_numbers, Endian::Big)?;
+    add_bytes_as_number(&bytes_read, &mut i32_numbers, Endian::Big)?;
     convert_bytes_to_ascii(&bytes_read, &mut converted_binary_to_ascii)?;
     let vec = &u32_numbers.clone();
     let mut app = App {
         bytes_read,
         should_quit: false,
         converted_binary_to_u32: u32_numbers,
+        converted_binary_to_i32: i32_numbers,
         converted_binary_to_ascii,
         start_of_window: 0,
-        end_of_window: 36,
+        end_of_window: 30,
         current_format: Format::Uint32,
         format_list_index: 0,
         format_list,

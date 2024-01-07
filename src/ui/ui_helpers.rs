@@ -40,6 +40,7 @@ pub fn create_converted_values_list(app: &mut App) -> List<'static> {
     let converted_values = match app.current_format {
         Format::Ascii => create_display_list(&app.converted_binary_to_ascii.clone(), app),
         Format::Uint32 => create_display_list(&app.converted_binary_to_u32.clone(), app),
+        Format::Int32 => create_display_list(&app.converted_binary_to_i32.clone(), app),
     };
 
     List::new(converted_values)

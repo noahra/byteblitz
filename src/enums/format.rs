@@ -3,5 +3,6 @@ use strum_macros::EnumIter; // To derive the iterator functionality.
 
 pub enum Format {
     Uint32,
+    Int32,
     Ascii,
 }
