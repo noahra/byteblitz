@@ -14,4 +14,5 @@ pub enum Format {
     Int64,
     Ascii,
     F32,
+    F64,
 }

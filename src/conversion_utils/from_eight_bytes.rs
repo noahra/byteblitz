@@ -25,6 +25,16 @@ impl From8Bytes for i64 {
     }
 }
 
+impl From8Bytes for f64 {
+    fn from_be_bytes(bytes: [u8; 8]) -> Self {
+        f64::from_be_bytes(bytes)
+    }
+
+    fn from_le_bytes(bytes: [u8; 8]) -> Self {
+        f64::from_le_bytes(bytes)
+    }
+}
+
 pub fn add_eight_bytes_as_number<T: From8Bytes>(
     bytes: &[u8],
     numbers: &mut Vec<T>,
@@ -38,9 +48,12 @@ pub fn add_eight_bytes_as_number<T: From8Bytes>(
             Endian::Big => T::from_be_bytes(chunk),
             Endian::Little => T::from_le_bytes(chunk),
         };
+        
         numbers.push(number);
     }
 
     Ok(())
 }
+
+
 
