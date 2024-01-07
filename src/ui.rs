@@ -1,6 +1,6 @@
 use crate::{
     config::Config,
-    conversions::{add_bytes_as_u32, convert_bytes_to_utf8},
+    conversions::{add_bytes_as_u32, convert_bytes_to_ascii},
     format::Format,
     inputmodes::InputMode,
     ui_helpers::{update, App},
@@ -55,17 +55,17 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
 
     let bytes_read = fs::read(config.file_path)?;
     let mut u32_numbers = Vec::new();
-    let mut converted_binary_to_utf8 = Vec::new();
+    let mut converted_binary_to_ascii = Vec::new();
     let format_list: Vec<Format> = Format::iter().collect();
 
     add_bytes_as_u32(&bytes_read, &mut u32_numbers)?;
-    convert_bytes_to_utf8(&bytes_read, &mut converted_binary_to_utf8)?;
+    convert_bytes_to_ascii(&bytes_read, &mut converted_binary_to_ascii)?;
     let vec = &u32_numbers.clone();
     let mut app = App {
         bytes_read,
         should_quit: false,
-        converted_numbers: u32_numbers,
-        converted_binary_to_utf8,
+        converted_binary_to_u32: u32_numbers,
+        converted_binary_to_ascii,
         start_of_window: 0,
         end_of_window: 36,
         current_format: Format::Uint32,
@@ -96,8 +96,8 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
 
 fn create_converted_values_list(app: &mut App) -> List<'static> {
     let converted_values = match app.current_format {
-        Format::Utf8 => create_display_list(&app.converted_binary_to_utf8.clone(), app),
-        Format::Uint32 => create_display_list(&app.converted_numbers.clone(), app),
+        Format::Ascii => create_display_list(&app.converted_binary_to_ascii.clone(), app),
+        Format::Uint32 => create_display_list(&app.converted_binary_to_u32.clone(), app),
     };
 
     List::new(converted_values)
@@ -121,12 +121,12 @@ fn create_current_format_paragraph(app: &App) -> List<'static> {
     for (index, element) in app.format_list.iter().enumerate() {
         if index == app.format_list_index {
             let format_paragraph = ListItem::new(Text::raw(format!("{:?}", element)))
-                .style(Style::default().fg(Color::White));
+                .style(Style::default().fg(Color::Yellow));
 
             vector_of_formats.push(format_paragraph);
         } else {
             let format_paragraph = ListItem::new(Text::raw(format!("{:?}", element)))
-                .style(Style::default().fg(Color::Yellow));
+                .style(Style::default().fg(Color::White));
 
             vector_of_formats.push(format_paragraph);
         }

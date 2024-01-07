@@ -82,8 +82,8 @@ fn handle_editing_mode_keys(app: &mut App, key: KeyCode) -> Result<(), std::io::
 pub struct App {
     pub bytes_read: Vec<u8>,
     pub should_quit: bool,
-    pub converted_numbers: Vec<u32>,
-    pub converted_binary_to_utf8: Vec<char>,
+    pub converted_binary_to_u32: Vec<u32>,
+    pub converted_binary_to_ascii: Vec<char>,
     pub start_of_window: usize,
     pub end_of_window: usize,
     pub current_format: Format,
