@@ -1,6 +1,5 @@
 use crossterm::event::KeyCode;
-
-use crate::{app::App, inputmodes::InputMode};
+use crate::{app::App, enums::inputmodes::InputMode};
 
 pub fn handle_normal_mode_keys(app: &mut App, key: KeyCode) -> Result<(), std::io::Error> {
     match key {

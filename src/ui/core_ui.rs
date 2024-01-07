@@ -1,9 +1,7 @@
 use crate::{
     config::Config,
     conversions::{add_bytes_as_u32, convert_bytes_to_ascii},
-    format::Format,
-    inputmodes::InputMode,
-    ui_helpers::{update, create_converted_values_list, create_list_of_formats, create_help_message, create_instructions_paragraph, create_input_paragraph}, app::App,
+    app::App, enums::{format::Format, inputmodes::InputMode},
 };
 use anyhow::Result;
 use crossterm::{
@@ -17,6 +15,8 @@ use ratatui::{
 use std::error::Error;
 use std::fs;
 use strum::IntoEnumIterator;
+
+use super::ui_helpers::{update, create_converted_values_list, create_list_of_formats, create_instructions_paragraph, create_help_message, create_input_paragraph};
 
 pub fn startup() -> Result<()> {
     enable_raw_mode()?;
@@ -72,7 +72,6 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
-
 
 fn ui(app: &mut App, f: &mut Frame) {
     let constraints = [

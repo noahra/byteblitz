@@ -1,15 +1,20 @@
 use anyhow::Result;
 use config::Config;
+use ui::core_ui::{startup, generate_ui, shutdown};
 use std::error::Error;
-use ui::{generate_ui, shutdown, startup};
 pub mod config;
 mod conversions;
-mod format;
-mod ui;
-mod inputmodes;
-mod ui_helpers;
-mod keyboard_input;
+
 mod app;
+mod ui {
+    pub mod ui_helpers;
+    pub mod core_ui;
+    pub mod keyboard_input;
+}
+mod enums {
+    pub mod inputmodes;
+    pub mod format;
+}
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     crossterm::terminal::enable_raw_mode()?;

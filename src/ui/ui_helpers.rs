@@ -1,6 +1,8 @@
 use crossterm::event::{self};
 use ratatui::{widgets::{List, Block, Borders, ListItem, ListDirection, Paragraph}, style::{Modifier, Color, Style, Stylize}, text::{Text, Line}};
-use crate::{inputmodes::InputMode, keyboard_input::{handle_normal_mode_keys, handle_editing_mode_keys}, app::App, format::Format};
+use crate::{ app::App, enums::{inputmodes::InputMode, format::Format}};
+
+use super::keyboard_input::{handle_normal_mode_keys, handle_editing_mode_keys};
 
 pub fn update(app: &mut App) -> Result<(), std::io::Error> {
     if event::poll(std::time::Duration::from_millis(250))? {
