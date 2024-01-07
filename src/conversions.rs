@@ -9,7 +9,7 @@ pub fn convert_to_u32(bytes: [u8; 4]) -> Option<u32> {
     }
 }
 
-pub fn convert_to_utf8(byte: u8) -> Option<char> {
+pub fn convert_to_ascii(byte: u8) -> Option<char> {
     if byte <= 127 {
         Some(byte as char)
     } else {
@@ -34,18 +34,17 @@ pub fn add_bytes_as_u32(
 
     Ok(())
 }
-pub fn convert_bytes_to_utf8(
+pub fn convert_bytes_to_ascii(
     bytes: &[u8],
-    utf8_chars: &mut Vec<char>,
+    ascii_chars: &mut Vec<char>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     for &byte in bytes {
         if !byte.is_ascii_alphabetic() {
             // Skip to the next iteration if it's not a letter
             continue;
         }
-
-        match convert_to_utf8(byte) {
-            Some(utf8_char) => utf8_chars.push(utf8_char),
+        match convert_to_ascii(byte) {
+            Some(ascii_char) => ascii_chars.push(ascii_char),
             None => return Err(From::from("Failed to convert bytes to UTF-8.")),
         }
     }
@@ -63,12 +62,12 @@ mod tests {
     }
 
     #[test]
-    fn test_convert_bytes_to_utf8() {
+    fn test_convert_bytes_to_ascii() {
         let bytes = vec![72, 101, 108, 108, 111]; // ASCII for "Hello"
         let expected_chars: Vec<char> = "Hello".chars().collect();
-        let mut utf8_chars = Vec::new();
-        let result = convert_bytes_to_utf8(&bytes, &mut utf8_chars);
+        let mut ascii_chars = Vec::new();
+        let result = convert_bytes_to_ascii(&bytes, &mut ascii_chars);
         assert!(result.is_ok()); // Ensure no error occurred
-        assert_eq!(utf8_chars, expected_chars); // Check the converted characters
+        assert_eq!(ascii_chars, expected_chars); // Check the converted characters
     }
 }
