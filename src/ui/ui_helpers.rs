@@ -108,7 +108,7 @@ pub fn create_help_message(app: &App) -> Paragraph<'static> {
                 "Esc".bold(),
                 " to turn off search field, ".into(),
                 "Enter".bold(),
-                "to go to the line number".into(),
+                " to go to the line number".into(),
             ],
             Style::default(),
         ),

@@ -4,7 +4,6 @@ use ui::core_ui::{startup, generate_ui, shutdown};
 use std::error::Error;
 pub mod config;
 mod conversions;
-
 mod app;
 mod ui {
     pub mod ui_helpers;

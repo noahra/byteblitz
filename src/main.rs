@@ -1,6 +1,5 @@
 use std::env;
 use std::process;
-
 use binscope::config::Config;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
