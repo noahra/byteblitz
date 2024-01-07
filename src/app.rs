@@ -1,9 +1,19 @@
-use crate::enums::{inputmodes::InputMode, format::Format};
+use crate::{enums::{inputmodes::InputMode, format::Format}, conversion_utils::from_three_bytes::{U24, I24}};
 
 pub struct App {
     pub bytes_read: Vec<u8>,
     pub should_quit: bool,
     pub converted_binary_to_u32: Vec<u32>,
+    pub converted_binary_to_i32: Vec<i32>,
+    pub converted_binary_to_i8: Vec<i8>,
+    pub converted_binary_to_u16: Vec<u16>,
+    pub converted_binary_to_i16: Vec<i16>,
+    pub converted_binary_to_u24: Vec<U24>,
+    pub converted_binary_to_i24: Vec<I24>,
+    pub converted_binary_to_u64: Vec<u64>,
+    pub converted_binary_to_i64: Vec<i64>,
+    pub converted_binary_to_f32: Vec<f32>,
+    pub converted_binary_to_f64: Vec<f64>,
     pub converted_binary_to_ascii: Vec<char>,
     pub start_of_window: usize,
     pub end_of_window: usize,
