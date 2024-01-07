@@ -8,5 +8,7 @@ pub enum Format {
     Uint8,
     Int16,
     Uint16,
+    Int24,
+    Uint24,
     Ascii,
 }
