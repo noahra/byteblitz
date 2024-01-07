@@ -8,6 +8,8 @@ mod format;
 mod ui;
 mod inputmodes;
 mod ui_helpers;
+mod keyboard_input;
+mod app;
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     crossterm::terminal::enable_raw_mode()?;
