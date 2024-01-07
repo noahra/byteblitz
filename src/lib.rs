@@ -3,16 +3,20 @@ use config::Config;
 use ui::core_ui::{startup, generate_ui, shutdown};
 use std::error::Error;
 pub mod config;
-mod conversions;
-mod app;
 mod ui {
     pub mod ui_helpers;
     pub mod core_ui;
     pub mod keyboard_input;
 }
+mod app;
+mod conversion_utils {
+    pub mod ascii;
+    pub mod from_four_bytes;
+}
 mod enums {
     pub mod inputmodes;
     pub mod format;
+    pub mod endian;
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {

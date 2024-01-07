@@ -1,7 +1,6 @@
 use crate::{
     config::Config,
-    conversions::{ convert_bytes_to_ascii, add_bytes_as_number, Endian},
-    app::App, enums::{format::Format, inputmodes::InputMode},
+    app::App, enums::{format::Format, inputmodes::InputMode, endian::Endian}, conversion_utils::{ascii::convert_bytes_to_ascii, from_four_bytes::add_bytes_as_number},
 };
 use anyhow::Result;
 use crossterm::{
