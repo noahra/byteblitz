@@ -12,6 +12,7 @@ mod app;
 mod conversion_utils {
     pub mod ascii;
     pub mod from_four_bytes;
+    pub mod from_one_byte_to_i8;
 }
 mod enums {
     pub mod inputmodes;

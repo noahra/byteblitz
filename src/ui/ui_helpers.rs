@@ -41,6 +41,8 @@ pub fn create_converted_values_list(app: &mut App) -> List<'static> {
         Format::Ascii => create_display_list(&app.converted_binary_to_ascii.clone(), app),
         Format::Uint32 => create_display_list(&app.converted_binary_to_u32.clone(), app),
         Format::Int32 => create_display_list(&app.converted_binary_to_i32.clone(), app),
+        Format::Int8 => create_display_list(&app.converted_binary_to_i8.clone(), app),
+        Format::Uint8 => create_display_list(&app.bytes_read.clone(), app),
     };
 
     List::new(converted_values)
