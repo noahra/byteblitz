@@ -145,14 +145,22 @@ impl App {
     }
 
     fn submit_message(&mut self) {
-        // TODO - proper error handling
-        if self.input.parse::<usize>().unwrap() > 0
-            && self.input.parse::<usize>().unwrap() < self.max_length - 40
-        {
-            self.start_of_window = self.input.parse::<usize>().unwrap() - 1;
-            self.end_of_window = self.input.parse::<usize>().unwrap() + 36;
+        if let Ok(num) = self.input.trim().parse::<usize>() {
+            if num > 0 {
+                let end = num.checked_add(30).unwrap_or(usize::MAX);
+                let start = num.saturating_sub(1);
+    
+                if end > self.max_length {
+                    self.start_of_window = self.max_length.saturating_sub(30);
+                    self.end_of_window = self.max_length+1;
+                } else {
+                    self.start_of_window = start;
+                    self.end_of_window = end;
+                }
+            }
         }
         self.input.clear();
         self.reset_cursor();
     }
+    
 }
