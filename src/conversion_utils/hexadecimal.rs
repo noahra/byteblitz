@@ -20,7 +20,7 @@ mod tests {
     #[test]
     fn test_convert_bytes_to_hex() {
         let bytes = vec![72, 101, 108, 108, 111]; // ASCII for "Hello"
-        let expected_hex: Vec<String> = ["48", "65", "6c", "6c", "6f"] // Hex for "Hello"
+        let expected_hex: Vec<String> = ["48", "65", "6C", "6C", "6F"] // Hex for "Hello"
             .iter().map(|&s| s.into()).collect();
         let mut hex_strings = Vec::new();
         let result = convert_bytes_to_hex(&bytes, &mut hex_strings);
