@@ -16,6 +16,7 @@ mod conversion_utils {
     pub mod from_two_bytes;
     pub mod from_three_bytes;
     pub mod from_eight_bytes;
+    pub mod hexadecimal;
 }
 mod enums {
     pub mod inputmodes;

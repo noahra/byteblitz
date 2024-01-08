@@ -36,6 +36,7 @@ pub fn create_display_list<T: std::fmt::Display>(
         .collect()
 }
 
+
 pub fn create_converted_values_list(app: &mut App) -> List<'static> {
     let converted_values = match app.current_format {
         Format::Ascii => create_display_list(&app.converted_binary_to_ascii.clone(), app),
@@ -51,6 +52,7 @@ pub fn create_converted_values_list(app: &mut App) -> List<'static> {
         Format::Int64 => create_display_list(&app.converted_binary_to_i64.clone(), app),
         Format::F32 => create_display_list(&app.converted_binary_to_f32.clone(), app),
         Format::F64 => create_display_list(&app.converted_binary_to_f64.clone(), app),
+        Format::Hex => create_display_list(&app.converted_binary_to_hex.clone(), app),
     };
 
     List::new(converted_values)

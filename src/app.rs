@@ -5,6 +5,7 @@ pub struct App {
     pub should_quit: bool,
     pub converted_binary_to_u32: Vec<u32>,
     pub converted_binary_to_i32: Vec<i32>,
+    pub converted_binary_to_hex: Vec<String>,
     pub converted_binary_to_i8: Vec<i8>,
     pub converted_binary_to_u16: Vec<u16>,
     pub converted_binary_to_i16: Vec<i16>,
