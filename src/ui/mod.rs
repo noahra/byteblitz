@@ -1,3 +1,3 @@
-pub mod helpers;
 pub mod core_ui;
-pub mod keyboard;
+pub mod keyboard_input;
+pub mod ui_helpers;

@@ -42,7 +42,7 @@ impl From3Bytes for I24 {
 pub fn add_three_bytes_as_number<T: From3Bytes>(
     bytes: &[u8],
     numbers: &mut Vec<T>,
-    endian: Endian,
+    endian: &Endian,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let max_index = bytes.len() - (bytes.len() % 3);
 
