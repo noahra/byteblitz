@@ -39,7 +39,7 @@ impl From4Bytes for f32 {
 pub fn add_bytes_as_number<T: From4Bytes>(
     bytes: &[u8],
     numbers: &mut Vec<T>,
-    endian: Endian,
+    endian: &Endian,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let max_index = bytes.len() - (bytes.len() % 4);
 

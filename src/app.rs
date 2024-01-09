@@ -1,8 +1,9 @@
-use crate::{enums::{inputmodes::InputMode, format::Format}, conversion_utils::from_three_bytes::{U24, I24}};
+use crate::{enums::{inputmodes::InputMode, format::Format, endian::Endian}, conversion_utils::from_three_bytes::{U24, I24}};
 
 pub struct App {
     pub bytes_read: Vec<u8>,
     pub should_quit: bool,
+    pub endianess: Endian,
     pub converted_binary_to_u32: Vec<u32>,
     pub converted_binary_to_i32: Vec<i32>,
     pub converted_binary_to_hex: Vec<String>,

@@ -96,6 +96,12 @@ pub fn create_list_of_formats(app: &App) -> List<'static> {
 
     list
 }
+
+pub fn create_endianess_paragraph(app: &App) -> Paragraph<'_> {
+    Paragraph::new(Text::raw(format!("{:?}", app.endianess)))
+        .style(Style::default().fg(Color::Green))
+        .block(Block::default().title("Endianess").borders(Borders::ALL))
+}
 pub fn create_instructions_paragraph() -> Paragraph<'static> {
     Paragraph::new(Text::raw(
         "Use 'j' to move down, 'k' to move up in the list. Use 'h' and 'l' to switch between formats",
@@ -132,7 +138,7 @@ pub fn create_help_message(app: &App) -> Paragraph<'static> {
 }
 
 // Function to create the input paragraph
-pub fn create_input_paragraph(app: &mut App) -> Paragraph {
+pub fn create_input_paragraph(app: &App) -> Paragraph {
     Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
             InputMode::Normal => Style::default(),

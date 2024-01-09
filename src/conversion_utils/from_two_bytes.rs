@@ -28,7 +28,7 @@ impl From2Bytes for i16 {
 pub fn add_two_bytes_as_number<T: From2Bytes>(
     bytes: &[u8],
     numbers: &mut Vec<T>,
-    endian: Endian,
+    endian: &Endian,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let max_index = bytes.len() - (bytes.len() % 2);
 

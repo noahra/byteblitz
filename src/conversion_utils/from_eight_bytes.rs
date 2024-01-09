@@ -38,7 +38,7 @@ impl From8Bytes for f64 {
 pub fn add_eight_bytes_as_number<T: From8Bytes>(
     bytes: &[u8],
     numbers: &mut Vec<T>,
-    endian: Endian,
+    endian: &Endian,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let max_index = bytes.len() - (bytes.len() % 8);
 
