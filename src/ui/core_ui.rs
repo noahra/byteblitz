@@ -23,8 +23,8 @@ use std::fs;
 use strum::IntoEnumIterator;
 
 use super::ui_helpers::{
-    create_converted_values_list, create_help_message, create_input_paragraph,
-    create_instructions_paragraph, create_list_of_formats, update, create_endianess_paragraph,
+    create_converted_values_list, create_endianess_paragraph, create_help_message,
+    create_input_paragraph, create_instructions_paragraph, create_list_of_formats, update,
 };
 
 pub fn startup() -> Result<()> {
@@ -78,7 +78,7 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     let mut app = App {
         bytes_read,
         should_quit: false,
-        endianess, 
+        endianess,
         converted_binary_to_u32: u32_numbers,
         converted_binary_to_i32: i32_numbers,
         converted_binary_to_hex,
@@ -142,7 +142,7 @@ fn ui(app: &mut App, f: &mut Frame) {
     let endianess_paragraph = create_endianess_paragraph(app);
 
     f.render_widget(current_format_paragraph, layout[0]);
-    f.render_widget(endianess_paragraph,layout[1]);
+    f.render_widget(endianess_paragraph, layout[1]);
     f.render_widget(list, layout[2]);
     f.render_widget(instructions_paragraph, layout[3]);
     f.render_widget(help_message, layout[5]);
@@ -150,8 +150,8 @@ fn ui(app: &mut App, f: &mut Frame) {
 
     if let InputMode::Editing = app.input_mode {
         f.set_cursor(
-            layout[3].x + app.cursor_position as u16 + 1,
-            layout[3].y + 1,
+            layout[4].x + app.cursor_position as u16 + 1,
+            layout[4].y + 1,
         )
     }
 }
