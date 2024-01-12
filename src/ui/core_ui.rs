@@ -126,7 +126,7 @@ fn ui(app: &mut App, f: &mut Frame) {
         Constraint::Percentage(5),
         Constraint::Percentage(50),
         Constraint::Percentage(5),
-        Constraint::Percentage(5),
+        Constraint::Percentage(4),
         Constraint::Percentage(5),
         Constraint::Percentage(5),
     ];
