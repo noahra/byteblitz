@@ -14,18 +14,21 @@ env:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
     strategy:
       matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
         toolchain:
           - stable
           - beta
           - nightly
-        # Exclude clippy and fmt checks on beta and nightly to avoid redundancy
         exclude:
           - toolchain: beta
           - toolchain: nightly
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v3
@@ -36,12 +39,12 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
     - name: Lint with clippy
-      if: matrix.toolchain == 'stable' # Run clippy only on stable
+      if: matrix.os == 'ubuntu-latest' && matrix.toolchain == 'stable'
       run: |
         rustup component add clippy
         cargo clippy -- -D warnings
     - name: Check formatting with rustfmt
-      if: matrix.toolchain == 'stable' # Run rustfmt only on stable
+      if: matrix.os == 'ubuntu-latest' && matrix.toolchain == 'stable'
       run: |
         rustup component add rustfmt
         cargo fmt -- --check
