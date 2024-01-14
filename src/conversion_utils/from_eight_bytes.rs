@@ -43,17 +43,23 @@ pub fn add_eight_bytes_as_number<T: From8Bytes>(
     let max_index = bytes.len() - (bytes.len() % 8);
 
     for i in (0..max_index).step_by(8) {
-        let chunk = [bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3],bytes[i + 4],bytes[i + 5],bytes[i + 6],bytes[i + 7]];
+        let chunk = [
+            bytes[i],
+            bytes[i + 1],
+            bytes[i + 2],
+            bytes[i + 3],
+            bytes[i + 4],
+            bytes[i + 5],
+            bytes[i + 6],
+            bytes[i + 7],
+        ];
         let number = match endian {
             Endian::Big => T::from_be_bytes(chunk),
             Endian::Little => T::from_le_bytes(chunk),
         };
-        
+
         numbers.push(number);
     }
 
     Ok(())
 }
-
-
-

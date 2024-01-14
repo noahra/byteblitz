@@ -1,4 +1,7 @@
-use crate::{enums::{inputmodes::InputMode, format::Format, endian::Endian}, conversion_utils::from_three_bytes::{U24, I24}};
+use crate::{
+    conversion_utils::from_three_bytes::{I24, U24},
+    enums::{endian::Endian, format::Format, inputmodes::InputMode},
+};
 
 pub struct App {
     pub bytes_read: Vec<u8>,
@@ -74,7 +77,7 @@ impl App {
                 let start = num.saturating_sub(1);
                 if end > self.max_length {
                     self.start_of_window = self.max_length.saturating_sub(30);
-                    self.end_of_window = self.max_length+1;
+                    self.end_of_window = self.max_length + 1;
                 } else {
                     self.start_of_window = start;
                     self.end_of_window = end;
@@ -84,5 +87,4 @@ impl App {
         self.input.clear();
         self.reset_cursor();
     }
-    
 }

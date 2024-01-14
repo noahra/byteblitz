@@ -43,4 +43,3 @@ pub fn add_two_bytes_as_number<T: From2Bytes>(
 
     Ok(())
 }
-

@@ -1,8 +1,15 @@
+use crate::{
+    app::App,
+    enums::{format::Format, inputmodes::InputMode},
+};
 use crossterm::event::{self};
-use ratatui::{widgets::{List, Block, Borders, ListItem, ListDirection, Paragraph}, style::{Modifier, Color, Style, Stylize}, text::{Text, Line}};
-use crate::{ app::App, enums::{inputmodes::InputMode, format::Format}};
+use ratatui::{
+    style::{Color, Modifier, Style, Stylize},
+    text::{Line, Text},
+    widgets::{Block, Borders, List, ListDirection, ListItem, Paragraph},
+};
 
-use super::keyboard_input::{handle_normal_mode_keys, handle_editing_mode_keys};
+use super::keyboard_input::{handle_editing_mode_keys, handle_normal_mode_keys};
 
 pub fn update(app: &mut App) -> Result<(), std::io::Error> {
     if event::poll(std::time::Duration::from_millis(250))? {
@@ -17,7 +24,6 @@ pub fn update(app: &mut App) -> Result<(), std::io::Error> {
     }
     Ok(())
 }
-
 
 pub fn create_display_list<T: std::fmt::Display>(
     vector_to_be_converted: &[T],
@@ -35,7 +41,6 @@ pub fn create_display_list<T: std::fmt::Display>(
         .map(|(index, n)| format!("{:width$}. {}", index + 1, n, width = max_index_width))
         .collect()
 }
-
 
 pub fn create_converted_values_list(app: &mut App) -> List<'static> {
     let converted_values = match app.current_format {
@@ -87,7 +92,11 @@ pub fn create_list_of_formats(app: &App) -> List<'static> {
         }
     }
     let list = List::new(vector_of_formats)
-        .block(Block::default().title("Current format").borders(Borders::ALL))
+        .block(
+            Block::default()
+                .title("Current format")
+                .borders(Borders::ALL),
+        )
         .style(Style::default().fg(Color::White))
         .highlight_style(Style::default().add_modifier(Modifier::ITALIC))
         .highlight_symbol(">>")

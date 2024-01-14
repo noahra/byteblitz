@@ -22,6 +22,9 @@ mod tests {
 
         let expected: Vec<i8> = vec![0, 127, -128, -1];
 
-        assert_eq!(numbers, expected, "The conversion from u8 to i8 did not produce the expected results.");
+        assert_eq!(
+            numbers, expected,
+            "The conversion from u8 to i8 did not produce the expected results."
+        );
     }
 }

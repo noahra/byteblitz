@@ -17,7 +17,3 @@ pub enum Format {
     F32,
     F64,
 }
-
-
-
-

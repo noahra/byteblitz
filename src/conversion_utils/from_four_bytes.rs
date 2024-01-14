@@ -34,8 +34,6 @@ impl From4Bytes for f32 {
     }
 }
 
-
-
 pub fn add_bytes_as_number<T: From4Bytes>(
     bytes: &[u8],
     numbers: &mut Vec<T>,
@@ -54,4 +52,3 @@ pub fn add_bytes_as_number<T: From4Bytes>(
 
     Ok(())
 }
-
