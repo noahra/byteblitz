@@ -2,7 +2,14 @@
 name = "byteblitz"
 version = "0.1.0"
 edition = "2021"
-
+authors = ["Noah Rahimzadagan <noah.rahimzadagan@gmail.com>"]
+license = "GPL-3.0" # or the specific GPL version you are using
+description = "A tool to examine the binary contents of files"
+readme = "README.md"
+homepage = "https://github.com/noahra/byteblitz"
+repository = "https://github.com/noahra/byteblitz"
+keywords = ["cli", "search", "demo"]
+categories = ["command-line-utilities"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -11,3 +18,4 @@ crossterm = "0.27.0"
 ratatui = "0.25.0"
 strum = "0.25"
 strum_macros = "0.25.3"
+
