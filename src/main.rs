@@ -1,4 +1,4 @@
-use binscope::config::Config;
+use byteblitz::config::Config;
 use std::env;
 use std::process;
 
@@ -8,7 +8,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Problem parsing arguments: {err}");
         process::exit(1);
     });
-    if let Err(e) = binscope::run(config) {
+    if let Err(e) = byteblitz::run(config) {
         println!("Application error: {e}");
         process::exit(1);
     }
