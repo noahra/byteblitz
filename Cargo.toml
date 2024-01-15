@@ -1,5 +1,5 @@
 [package]
-name = "binscope"
+name = "byteblitz"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,5 +9,5 @@ edition = "2021"
 anyhow = "1.0.79"
 crossterm = "0.27.0"
 ratatui = "0.25.0"
-strum = "0.21"
-strum_macros = "0.21"
+strum = "0.25"
+strum_macros = "0.25.3"
