@@ -19,7 +19,3 @@ ratatui = "0.25.0"
 strum = "0.25"
 strum_macros = "0.25.3"
 
-[[bin]]
-name = "byteblitz"
-path = "src/main.rs"  # or the path to your main binary file
-
