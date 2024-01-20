@@ -5,7 +5,7 @@
 
 </p>
 <p align="center" style="font-weight: bold;">
-a command-line tool for viewing the content of files in different formats. 
+a command-line tool for viewing the binary content of files in different formats. 
 </p>
  
 <p align="center">
@@ -38,13 +38,13 @@ scoop bucket add scoop-byteblitz https://github.com/noahra/scoop-byteblitz && sc
 ## Usage
 
 ```bash
-byteblitz <file> ...
+byteblitz <file> 
 ```
 
 If you want to view values (values larger than a single byte) in little endian format you can use the following environment variable.
 
 ```bash
-LITTLE_ENDIAN=1 byteblitz <file> ...
+LITTLE_ENDIAN=1 byteblitz <file> 
 ```
 
 ## byteblitz in action ✨
@@ -54,9 +54,9 @@ You can switch between different formats.
 <br><br>
 ![demo](./assets/formats.gif)
 <br><br>
-You can scroll through values inside the file.
+You can scroll through the values inside the file.
 <br><br>
 ![demo](./assets/elements.gif)
-You can even interpret values in little endian format
+You can even interpret values in little-endian format
 <br><br>
 ![demo](./assets/endianess.gif)
