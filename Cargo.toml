@@ -1,6 +1,6 @@
 [package]
 name = "byteblitz"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 authors = ["Noah Rahimzadagan <noah.rahimzadagan@gmail.com>"]
 license = "GPL-3.0" # or the specific GPL version you are using
