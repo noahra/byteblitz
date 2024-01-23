@@ -35,10 +35,13 @@ pub fn create_display_list<T: std::fmt::Display>(
 
     vector_to_be_converted
         .iter()
-        .enumerate() // Get the index and value
-        .skip(app.start_of_window) // Skip to the starting window index.
-        .take(app.end_of_window - app.start_of_window) // Take the range from start to end of the window.
-        .map(|(index, n)| format!("{:width$}. {}", index + 1, n, width = max_index_width))
+        .enumerate()
+        .skip(app.start_of_window)
+        .take(app.end_of_window - app.start_of_window)
+        .map(|(index, n)| match app.current_format {
+            Format::Hex => format!("{:08x}: {}", index, n),
+            _ => format!("{:width$}. {}", index + 1, n, width = max_index_width),
+        })
         .collect()
 }
 
@@ -146,7 +149,6 @@ pub fn create_help_message(app: &App) -> Paragraph<'static> {
     Paragraph::new(text)
 }
 
-// Function to create the input paragraph
 pub fn create_input_paragraph(app: &App) -> Paragraph {
     Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
