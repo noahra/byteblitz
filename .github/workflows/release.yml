@@ -9,7 +9,34 @@ on:
       - v[0-9]+.*
 
 jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      match: ${{ steps.compare.outputs.match }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract Cargo.toml Version
+        id: cargo_version
+        run: echo "::set-output name=version::$(grep 'version =' Cargo.toml | head -n 1 | cut -d '"' -f 2)"
+
+      - name: Extract Git Tag
+        id: git_tag
+        run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+
+      - name: Compare Versions
+        id: compare
+        run: |
+          if [ "${{ steps.cargo_version.outputs.version }}" != "${{ steps.git_tag.outputs.tag }}" ]; then
+            echo "Version mismatch: Cargo.toml version does not match the Git tag."
+            exit 1
+          fi
+          echo "::set-output name=match::true"
+
   create-release:
+    needs: check-version
+    if: ${{ needs.check-version.outputs.match == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
