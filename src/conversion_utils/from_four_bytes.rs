@@ -1,5 +1,5 @@
-use crate::enums::endian::Endian;
 use super::add_bytes_as_number_impl;
+use crate::enums::endian::Endian;
 
 pub trait From4Bytes: Sized {
     fn from_be_bytes(bytes: [u8; 4]) -> Self;
@@ -43,11 +43,12 @@ pub fn add_bytes_as_number<T: From4Bytes>(
     endian: &Endian,
 ) -> Result<(), Box<dyn std::error::Error>> {
     add_bytes_as_number_impl(
-        bytes, numbers,
+        bytes,
+        numbers,
         match endian {
-            Endian::Big    => T::from_be_bytes,
+            Endian::Big => T::from_be_bytes,
             Endian::Little => T::from_le_bytes,
-        }
+        },
     )
 }
 

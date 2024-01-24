@@ -1,8 +1,7 @@
 use core::fmt;
 
-use crate::enums::endian::Endian;
 use super::add_bytes_as_number_impl;
-
+use crate::enums::endian::Endian;
 
 pub trait From3Bytes: Sized {
     fn from_be_bytes(bytes: [u8; 3]) -> Self;
@@ -53,7 +52,6 @@ impl fmt::Display for I24 {
     }
 }
 
-
 pub fn add_three_bytes_as_number<T: From3Bytes>(
     bytes: &[u8],
     numbers: &mut Vec<T>,
@@ -62,11 +60,12 @@ pub fn add_three_bytes_as_number<T: From3Bytes>(
     endian: &Endian,
 ) -> Result<(), Box<dyn std::error::Error>> {
     add_bytes_as_number_impl(
-        bytes, numbers,
+        bytes,
+        numbers,
         match endian {
-            Endian::Big    => T::from_be_bytes,
+            Endian::Big => T::from_be_bytes,
             Endian::Little => T::from_le_bytes,
-        }
+        },
     )
 }
 
@@ -79,7 +78,16 @@ mod tests {
         let mut v: Vec<U24> = Vec::new();
         add_three_bytes_as_number(&[1, 2, 1, 4, 0, 2, 2, 0, 100], &mut v, &Endian::Big).unwrap();
         add_three_bytes_as_number(&[1, 2, 1, 4, 0, 2, 2, 0, 100], &mut v, &Endian::Little).unwrap();
-        assert_eq!(v.as_slice(), &[U24(66049), U24(262146), U24(131172), U24(66049), U24(131076), U24(6553602)]);
+        assert_eq!(
+            v.as_slice(),
+            &[
+                U24(66049),
+                U24(262146),
+                U24(131172),
+                U24(66049),
+                U24(131076),
+                U24(6553602)
+            ]
+        );
     }
 }
-

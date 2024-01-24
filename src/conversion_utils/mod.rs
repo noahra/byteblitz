@@ -24,5 +24,3 @@ fn add_bytes_as_number_impl<T, const N: usize>(
     numbers.extend(result);
     Ok(())
 }
-
-
