@@ -13,8 +13,7 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 1. Fork the repo and create your branch from `main`.
 2. If you've added code that should be tested, add tests.
 4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
+5. Issue that pull request!
 
 ## Any contributions you make will be under the GNU GPL-3.0 License
 In short, when you submit code changes, your submissions are understood to be under the same [GNU GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.html) that covers the project. Feel free to contact the maintainers if that's a concern.
