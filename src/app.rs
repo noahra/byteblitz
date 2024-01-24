@@ -1,5 +1,5 @@
 use crate::{
-    conversion_utils::from_three_bytes::{I24, U24},
+    conversion_utils::{I24, U24},
     enums::{endian::Endian, format::Format, inputmodes::InputMode},
 };
 
