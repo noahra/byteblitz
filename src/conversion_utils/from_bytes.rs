@@ -2,7 +2,7 @@ use thiserror::Error;
 
 use crate::enums::endian::Endian;
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum FromBytesError {
     #[error("{0:?} trailing bytes were given")]
     Trailing(usize),
@@ -102,32 +102,38 @@ implement_from_bytes!(f64, 8);
 #[cfg(test)]
 mod tests {
     use super::*;
+    use FromBytesError::Trailing;
 
     #[test]
     fn test_add_two_bytes() {
         let mut v: Vec<u16> = Vec::new();
-        u16::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Big, &mut v).unwrap();
-        u16::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Little, &mut v).unwrap();
-        assert_eq!(v.as_slice(), &[258, 260, 2, 512, 513, 1025, 512, 2]);
+        assert_eq!(u16::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Big, &mut v), Err(Trailing(1)));
+        assert_eq!(u16::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Little, &mut v), Err(Trailing(1)));
+        u16::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0], Endian::Big, &mut v).unwrap();
+        u16::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0], Endian::Little, &mut v).unwrap();
+        assert_eq!(v.as_slice(), &[258, 260, 2, 512, 513, 1025, 512, 2, 258, 260, 2, 512, 513, 1025, 512, 2]);
     }
 
 
     #[test]
     fn test_add_four_bytes() {
         let mut v: Vec<u32> = Vec::new();
-        u32::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Big, &mut v).unwrap();
-        u32::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Little, &mut v).unwrap();
-        assert_eq!(v.as_slice(), &[16908548, 131584, 67174913, 131584]);
+        assert_eq!(u32::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Big, &mut v), Err(Trailing(1)));
+        assert_eq!(u32::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Little, &mut v), Err(Trailing(1)));
+        u32::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0], Endian::Big, &mut v).unwrap();
+        u32::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0], Endian::Little, &mut v).unwrap();
+        assert_eq!(v.as_slice(), &[16908548, 131584, 67174913, 131584, 16908548, 131584, 67174913, 131584]);
     }
 
 
     #[test]
     fn test_add_eight_bytes() {
         let mut v: Vec<u64> = Vec::new();
-        u64::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Big, &mut v).unwrap();
-        u64::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Little, &mut v).unwrap();
-        println!("{v:?}");
-        assert_eq!(v.as_slice(), &[72621660682977792, 565149043851777]);
+        assert_eq!(u64::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Big, &mut v), Err(Trailing(1)));
+        assert_eq!(u64::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0, 100], Endian::Little, &mut v), Err(Trailing(1)));
+        u64::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0], Endian::Big, &mut v).unwrap();
+        u64::add_bytes(&[1, 2, 1, 4, 0, 2, 2, 0], Endian::Little, &mut v).unwrap();
+        assert_eq!(v.as_slice(), &[72621660682977792, 565149043851777, 72621660682977792, 565149043851777]);
     }
 }
 
