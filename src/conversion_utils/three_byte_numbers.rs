@@ -3,10 +3,8 @@ use core::fmt;
 use super::FromBytes;
 use crate::enums::endian::Endian;
 
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct U24(u32);
-
 
 impl fmt::Display for U24 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -29,10 +27,8 @@ impl FromBytes<3> for U24 {
     }
 }
 
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct I24(i32);
-
 
 impl fmt::Display for I24 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -53,11 +49,9 @@ impl FromBytes<3> for I24 {
                 // Sign extension for 24-bit numbers
                 I24((num << 8) >> 8)
             }
-
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -81,4 +75,3 @@ mod tests {
         );
     }
 }
-

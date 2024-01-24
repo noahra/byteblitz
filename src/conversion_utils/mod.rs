@@ -6,5 +6,3 @@ pub mod three_byte_numbers;
 
 pub use from_bytes::FromBytes;
 pub use three_byte_numbers::{I24, U24};
-
-
