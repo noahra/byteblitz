@@ -41,7 +41,9 @@ pub trait FromBytes<const N: usize> {
             .map(move |x| Self::from_bytes(x, endian)))
     }
 
-    /// Appends [Self]s taken from the array to the [Vec] `numbers`.
+    /// Appends [Self]s taken from the array to the [Vec] `numbers`. If
+    /// trailing bytes are there, an error is returned, but `numbers` gets how
+    /// many bytes are possible
     ///
     /// # Output
     ///
@@ -52,8 +54,18 @@ pub trait FromBytes<const N: usize> {
         where
     Self: Sized,
     {
-        numbers.extend(Self::from_multiple_bytes(bytes, endian)?);
-        Ok(())
+        match Self::from_multiple_bytes(bytes, endian) {
+            Ok(i) => {
+                numbers.extend(i);
+                Ok(())
+            }
+            Err(e@FromBytesError::Trailing(x)) => {
+                numbers.extend(Self::from_multiple_bytes(
+                    &bytes[0..bytes.len() - x], endian
+                ).unwrap());
+                Err(e)
+            }
+        }
     }
 }
 

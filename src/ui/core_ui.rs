@@ -62,20 +62,22 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
         endianess = Endian::Little;
     }
 
-    u32::add_bytes(&bytes_read, endianess, &mut u32_numbers)?;
-    i32::add_bytes(&bytes_read, endianess, &mut i32_numbers)?;
+    let _ = (
+        u32::add_bytes(&bytes_read, endianess, &mut u32_numbers),
+        i32::add_bytes(&bytes_read, endianess, &mut i32_numbers),
 
-    u16::add_bytes(&bytes_read, endianess, &mut u16_numbers)?;
-    i16::add_bytes(&bytes_read, endianess, &mut i16_numbers)?;
+        u16::add_bytes(&bytes_read, endianess, &mut u16_numbers),
+        i16::add_bytes(&bytes_read, endianess, &mut i16_numbers),
 
-    U24::add_bytes(&bytes_read, endianess, &mut u24_numbers)?;
-    I24::add_bytes(&bytes_read, endianess, &mut i24_numbers)?;
-    
-    u64::add_bytes(&bytes_read, endianess, &mut u64_numbers)?;
-    i64::add_bytes(&bytes_read, endianess, &mut i64_numbers)?;
+        U24::add_bytes(&bytes_read, endianess, &mut u24_numbers),
+        I24::add_bytes(&bytes_read, endianess, &mut i24_numbers),
+        
+        u64::add_bytes(&bytes_read, endianess, &mut u64_numbers),
+        i64::add_bytes(&bytes_read, endianess, &mut i64_numbers),
 
-    f32::add_bytes(&bytes_read, endianess, &mut f32_numbers)?;
-    f64::add_bytes(&bytes_read, endianess, &mut f64_numbers)?;
+        f32::add_bytes(&bytes_read, endianess, &mut f32_numbers),
+        f64::add_bytes(&bytes_read, endianess, &mut f64_numbers),
+    );
 
     add_byte_as_i8(&bytes_read, &mut i8_numbers)?;
     convert_bytes_to_ascii(&bytes_read, &mut converted_binary_to_ascii)?;
