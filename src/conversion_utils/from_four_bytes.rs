@@ -1,3 +1,4 @@
+use super::add_bytes_as_number_impl;
 use crate::enums::endian::Endian;
 
 pub trait From4Bytes: Sized {
@@ -37,18 +38,29 @@ impl From4Bytes for f32 {
 pub fn add_bytes_as_number<T: From4Bytes>(
     bytes: &[u8],
     numbers: &mut Vec<T>,
+    // FIXME: It may be better to get Endian instead of &Endian since it is
+    // just a simple enum with no value inside
     endian: &Endian,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let max_index = bytes.len() - (bytes.len() % 4);
+    add_bytes_as_number_impl(
+        bytes,
+        numbers,
+        match endian {
+            Endian::Big => T::from_be_bytes,
+            Endian::Little => T::from_le_bytes,
+        },
+    )
+}
 
-    for i in (0..max_index).step_by(4) {
-        let chunk = [bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]];
-        let number = match endian {
-            Endian::Big => T::from_be_bytes(chunk),
-            Endian::Little => T::from_le_bytes(chunk),
-        };
-        numbers.push(number);
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_add_two_bytes() {
+        let mut v: Vec<u32> = Vec::new();
+        add_bytes_as_number(&[1, 2, 1, 4, 0, 2, 2, 0, 100], &mut v, &Endian::Big).unwrap();
+        add_bytes_as_number(&[1, 2, 1, 4, 0, 2, 2, 0, 100], &mut v, &Endian::Little).unwrap();
+        assert_eq!(v.as_slice(), &[16908548, 131584, 67174913, 131584]);
     }
-
-    Ok(())
 }

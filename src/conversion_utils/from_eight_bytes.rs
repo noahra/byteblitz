@@ -1,3 +1,4 @@
+use super::add_bytes_as_number_impl;
 use crate::enums::endian::Endian;
 
 pub trait From8Bytes: Sized {
@@ -40,26 +41,26 @@ pub fn add_eight_bytes_as_number<T: From8Bytes>(
     numbers: &mut Vec<T>,
     endian: &Endian,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let max_index = bytes.len() - (bytes.len() % 8);
+    add_bytes_as_number_impl(
+        bytes,
+        numbers,
+        match endian {
+            Endian::Big => T::from_be_bytes,
+            Endian::Little => T::from_le_bytes,
+        },
+    )
+}
 
-    for i in (0..max_index).step_by(8) {
-        let chunk = [
-            bytes[i],
-            bytes[i + 1],
-            bytes[i + 2],
-            bytes[i + 3],
-            bytes[i + 4],
-            bytes[i + 5],
-            bytes[i + 6],
-            bytes[i + 7],
-        ];
-        let number = match endian {
-            Endian::Big => T::from_be_bytes(chunk),
-            Endian::Little => T::from_le_bytes(chunk),
-        };
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-        numbers.push(number);
+    #[test]
+    fn test_add_two_bytes() {
+        let mut v: Vec<u64> = Vec::new();
+        add_eight_bytes_as_number(&[1, 2, 1, 4, 0, 2, 2, 0, 100], &mut v, &Endian::Big).unwrap();
+        add_eight_bytes_as_number(&[1, 2, 1, 4, 0, 2, 2, 0, 100], &mut v, &Endian::Little).unwrap();
+        println!("{v:?}");
+        assert_eq!(v.as_slice(), &[72621660682977792, 565149043851777]);
     }
-
-    Ok(())
 }

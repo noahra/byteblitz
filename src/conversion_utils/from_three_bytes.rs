@@ -1,17 +1,15 @@
 use core::fmt;
 
+use super::add_bytes_as_number_impl;
 use crate::enums::endian::Endian;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct U24(u32);
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct I24(i32);
 
 pub trait From3Bytes: Sized {
     fn from_be_bytes(bytes: [u8; 3]) -> Self;
     fn from_le_bytes(bytes: [u8; 3]) -> Self;
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct U24(u32);
 
 impl From3Bytes for U24 {
     fn from_be_bytes(bytes: [u8; 3]) -> Self {
@@ -24,6 +22,15 @@ impl From3Bytes for U24 {
         U24(num)
     }
 }
+
+impl fmt::Display for U24 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct I24(i32);
 
 impl From3Bytes for I24 {
     fn from_be_bytes(bytes: [u8; 3]) -> Self {
@@ -39,33 +46,48 @@ impl From3Bytes for I24 {
     }
 }
 
-pub fn add_three_bytes_as_number<T: From3Bytes>(
-    bytes: &[u8],
-    numbers: &mut Vec<T>,
-    endian: &Endian,
-) -> Result<(), Box<dyn std::error::Error>> {
-    let max_index = bytes.len() - (bytes.len() % 3);
-
-    for i in (0..max_index).step_by(3) {
-        let chunk = [bytes[i], bytes[i + 1], bytes[i + 2]];
-        let number = match endian {
-            Endian::Big => T::from_be_bytes(chunk),
-            Endian::Little => T::from_le_bytes(chunk),
-        };
-        numbers.push(number);
-    }
-
-    Ok(())
-}
-
-impl fmt::Display for U24 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
 impl fmt::Display for I24 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+pub fn add_three_bytes_as_number<T: From3Bytes>(
+    bytes: &[u8],
+    numbers: &mut Vec<T>,
+    // FIXME: It may be better to get Endian instead of &Endian since it is
+    // just a simple enum with no value inside
+    endian: &Endian,
+) -> Result<(), Box<dyn std::error::Error>> {
+    add_bytes_as_number_impl(
+        bytes,
+        numbers,
+        match endian {
+            Endian::Big => T::from_be_bytes,
+            Endian::Little => T::from_le_bytes,
+        },
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_add_two_bytes() {
+        let mut v: Vec<U24> = Vec::new();
+        add_three_bytes_as_number(&[1, 2, 1, 4, 0, 2, 2, 0, 100], &mut v, &Endian::Big).unwrap();
+        add_three_bytes_as_number(&[1, 2, 1, 4, 0, 2, 2, 0, 100], &mut v, &Endian::Little).unwrap();
+        assert_eq!(
+            v.as_slice(),
+            &[
+                U24(66049),
+                U24(262146),
+                U24(131172),
+                U24(66049),
+                U24(131076),
+                U24(6553602)
+            ]
+        );
     }
 }
