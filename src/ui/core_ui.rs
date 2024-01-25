@@ -2,10 +2,11 @@ use crate::{
     app::App,
     config::Config,
     conversion_utils::{
-        ascii::convert_bytes_to_ascii, from_eight_bytes::add_eight_bytes_as_number,
-        from_four_bytes::add_bytes_as_number, from_one_byte_to_i8::add_byte_as_i8,
-        from_three_bytes::add_three_bytes_as_number, from_two_bytes::add_two_bytes_as_number,
+        ascii::convert_bytes_to_ascii,
+        from_one_byte_to_i8::add_byte_as_i8,
         hexadecimal::convert_bytes_to_hex,
+        three_byte_numbers::{I24, U24},
+        FromBytes,
     },
     enums::{endian::Endian, format::Format, inputmodes::InputMode},
 };
@@ -60,16 +61,19 @@ pub fn generate_ui(config: Config) -> Result<(), Box<dyn Error>> {
     if config.little_endianess {
         endianess = Endian::Little;
     }
-    add_bytes_as_number(&bytes_read, &mut u32_numbers, &endianess)?;
-    add_bytes_as_number(&bytes_read, &mut i32_numbers, &endianess)?;
-    add_two_bytes_as_number(&bytes_read, &mut u16_numbers, &endianess)?;
-    add_two_bytes_as_number(&bytes_read, &mut i16_numbers, &endianess)?;
-    add_three_bytes_as_number(&bytes_read, &mut u24_numbers, &endianess)?;
-    add_three_bytes_as_number(&bytes_read, &mut i24_numbers, &endianess)?;
-    add_eight_bytes_as_number(&bytes_read, &mut u64_numbers, &endianess)?;
-    add_eight_bytes_as_number(&bytes_read, &mut i64_numbers, &endianess)?;
-    add_bytes_as_number(&bytes_read, &mut f32_numbers, &endianess)?;
-    add_eight_bytes_as_number(&bytes_read, &mut f64_numbers, &endianess)?;
+
+    let _ = (
+        u32::add_bytes(&bytes_read, endianess, &mut u32_numbers),
+        i32::add_bytes(&bytes_read, endianess, &mut i32_numbers),
+        u16::add_bytes(&bytes_read, endianess, &mut u16_numbers),
+        i16::add_bytes(&bytes_read, endianess, &mut i16_numbers),
+        U24::add_bytes(&bytes_read, endianess, &mut u24_numbers),
+        I24::add_bytes(&bytes_read, endianess, &mut i24_numbers),
+        u64::add_bytes(&bytes_read, endianess, &mut u64_numbers),
+        i64::add_bytes(&bytes_read, endianess, &mut i64_numbers),
+        f32::add_bytes(&bytes_read, endianess, &mut f32_numbers),
+        f64::add_bytes(&bytes_read, endianess, &mut f64_numbers),
+    );
 
     add_byte_as_i8(&bytes_read, &mut i8_numbers)?;
     convert_bytes_to_ascii(&bytes_read, &mut converted_binary_to_ascii)?;
