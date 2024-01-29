@@ -35,6 +35,11 @@ On Windows, if you are using [Scoop](https://scoop.sh)
 scoop bucket add scoop-byteblitz https://github.com/noahra/scoop-byteblitz && scoop install byteblitz
 ```
 
+On Arch Linux (AUR)
+```bash
+yay -S byteblitz
+```
+
 ## Usage
 
 ```bash
