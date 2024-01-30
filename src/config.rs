@@ -15,16 +15,17 @@ impl Config {
 
         let little_endianess = env::var("LITTLE_ENDIAN").is_ok();
         let mut format = Format::Hex;
-        let file_path: String;
 
-        if args.len() == 3 {
-            file_path = args[1].clone();
-        } else if args.len() > 3 {
-            file_path = args[2].clone();
+        let file_path = if args.len() >= 3 {
+            args[2].clone()
+        } else {
+            args[1].clone()
+        };
+
+        if args.len() > 3 {
             format = match &args[1] {
-                "-hex" => Format::Hex,
-                "-int8" => Format::Int8,
-                "-uint8" => Format::Uint8,
+                arg if arg == "-hex" => Format::Hex,
+                arg if arg == "-int8" => Format::Int8,
                 // ... handle other formats
                 _ => return Err("invalid format"),
             };
