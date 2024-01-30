@@ -1,7 +1,8 @@
 use std::env;
 
 use crate::enums::format::Format;
-
+use clap::Parser;
+#[derive(Parser, Default, Debug)]
 pub struct Config {
     pub file_path: String,
     pub format: Format,
