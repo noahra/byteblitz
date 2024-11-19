@@ -44,13 +44,13 @@ EXAMPLES:
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     let config = Config::new(&args).unwrap_or_else(|err| {
+        if err == "user needs help" {
+            print_help_manual();
+            process::exit(0);
+        }
         println!("Problem parsing arguments: {err}");
         process::exit(1);
     });
-    if config.show_help {
-        print_help_manual();
-        process::exit(0);
-    }
 
     if let Err(e) = byteblitz::run(config) {
         println!("Application error: {e}");

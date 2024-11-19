@@ -3,16 +3,11 @@ use std::env;
 pub struct Config {
     pub file_path: String,
     pub little_endianess: bool,
-    pub show_help: bool,
 }
 impl Config {
     pub fn new(args: &[String]) -> Result<Config, &'static str> {
         if args.contains(&"-h".to_string()) || args.contains(&"--help".to_string()) {
-            return Ok(Config {
-                file_path: String::new(),
-                little_endianess: false,
-                show_help: true,
-            });
+            return Err("user needs help");
         }
 
         if args.len() < 2 {
@@ -25,7 +20,6 @@ impl Config {
         Ok(Config {
             file_path,
             little_endianess,
-            show_help: false,
         })
     }
 }
