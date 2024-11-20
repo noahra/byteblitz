@@ -3,7 +3,7 @@ use std::env;
 use std::process;
 
 fn print_help_manual() {
-    let help_text = format!(
+    let help_text = 
         "ByteBlitz - Command-line tool for viewing the binary content of files in different formats
 USAGE:
     byteblitz [FILE] [OPTIONS]
@@ -35,8 +35,7 @@ EXAMPLES:
     # Navigate to a specific line
     1. Open byteblitz
     2. Press 'e'
-    3. Enter line number"
-    );
+    3. Enter line number".to_string();
 
     println!("{}", help_text);
 }
