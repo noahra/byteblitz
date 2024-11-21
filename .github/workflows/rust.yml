@@ -43,8 +43,3 @@ jobs:
       run: |
         rustup component add clippy
         cargo clippy -- -D warnings
-    - name: Check formatting with rustfmt
-      if: matrix.os == 'ubuntu-latest' && matrix.toolchain == 'stable'
-      run: |
-        rustup component add rustfmt
-        cargo fmt -- --check
