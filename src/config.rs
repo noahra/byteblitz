@@ -6,6 +6,10 @@ pub struct Config {
 }
 impl Config {
     pub fn new(args: &[String]) -> Result<Config, &'static str> {
+        if args.contains(&"-h".to_string()) || args.contains(&"--help".to_string()) {
+            return Err("user needs help");
+        }
+
         if args.len() < 2 {
             return Err("not enough arguments");
         }
